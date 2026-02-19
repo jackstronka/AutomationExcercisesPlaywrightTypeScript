@@ -28,7 +28,9 @@ Common commands:
 |---------|-------------|
 | `npm run test` | All tests (all browsers) |
 | `npm run test:ui` | Playwright UI mode |
-| `npm run report` | Open HTML report |
+| `npm run report` | Open HTML report (local) |
+
+**Test reports (CI):** Latest HTML report is published to GitHub Pages after each run: **[https://jackstronka.github.io/AutomationExcercisesPlaywrightTypeScript/](https://jackstronka.github.io/AutomationExcercisesPlaywrightTypeScript/)**. One-time setup: **Settings → Pages → Source: GitHub Actions**.
 
 Other scenarios (single test, tags like `@smoke`, `--grep`, `--project`, `--workers`, `TEST_ENV`/`RUN_PROFILE`) are described in `docs/RUNNING_TESTS.md`.
 

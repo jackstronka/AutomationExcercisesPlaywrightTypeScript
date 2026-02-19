@@ -2,17 +2,19 @@
 
 The Playwright HTML report is **deployed to GitHub Pages** after each run (push or PR to `main`/`master`). You get a stable URL to view the latest report without downloading artifacts.
 
+## Report URL
+
+**https://jackstronka.github.io/AutomationExcercisesPlaywrightTypeScript/**
+
+(If the repo is under a different user/org, the URL is `https://<username>.github.io/AutomationExcercisesPlaywrightTypeScript/` or as shown in **Settings → Pages**.)
+
 ## One-time setup
 
 1. In the repo: **Settings → Pages**.
 2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
 3. Save. No need to create a branch or folder.
 
-After the next run of the “Playwright Tests” workflow, the report will be available at:
-
-**`https://<username>.github.io/AutomationExcercisesPlaywrightTypeScript/`**
-
-(Replace `<username>` with your GitHub username, or use the URL shown in Settings → Pages.)
+After the next run of the “Playwright Tests” workflow, the report will be available at the URL above.
 
 ## How it works
 
