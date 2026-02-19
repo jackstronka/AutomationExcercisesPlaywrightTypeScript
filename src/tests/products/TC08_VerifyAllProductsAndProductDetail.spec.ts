@@ -9,7 +9,7 @@ test.describe('TC08 Verify All Products and product detail page', () => {
   }, async ({ page, homePage }) => {
     await homePage.goto();
     await dismissOverlays(page);
-    await expect(page.getByRole('heading', { name: /full-fledged practice website/i }).first()).toBeVisible();
+    await homePage.expectLoaded();
 
     await clickDismissingOverlays(page, homePage.header.products);
     const productsPage = new ProductsPage(page);

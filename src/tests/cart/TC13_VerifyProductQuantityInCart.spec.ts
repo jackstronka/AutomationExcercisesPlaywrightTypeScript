@@ -11,7 +11,7 @@ test.describe('TC13 Verify Product quantity in Cart', () => {
   }, async ({ page, homePage }) => {
     await homePage.goto();
     await dismissOverlays(page);
-    await expect(page.getByRole('heading', { name: /full-fledged practice website/i }).first()).toBeVisible();
+    await homePage.expectLoaded();
 
     await homePage.viewProductLink.click();
     await page.waitForURL(/\/product_details\/\d+/, { waitUntil: 'domcontentloaded' });

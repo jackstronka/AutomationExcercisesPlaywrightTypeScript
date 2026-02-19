@@ -8,7 +8,7 @@ test.describe('TC10 Verify Subscription in home page', () => {
   }, async ({ page, homePage }) => {
     await homePage.goto();
     await dismissOverlays(page);
-    await expect(page.getByRole('heading', { name: /full-fledged practice website/i }).first()).toBeVisible();
+    await homePage.expectLoaded();
 
     await homePage.subscriptionHeading.scrollIntoViewIfNeeded();
     await expect(homePage.subscriptionHeading).toBeVisible();

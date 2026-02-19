@@ -1,23 +1,25 @@
-# GitHub Pages
+# GitHub Pages – Test report
 
-This project is **not** currently set up for GitHub Pages.
+The Playwright HTML report is **deployed to GitHub Pages** after each run (push or PR to `main`/`master`). You get a stable URL to view the latest report without downloading artifacts.
 
-## What GitHub Pages could be used for
-
-- **Project documentation** – serve `docs/` or a generated site (e.g. from MkDocs, Docusaurus, or plain Markdown with a theme).
-- **Playwright HTML report** – optionally publish the latest test report (e.g. from `main`) so the team can view it without downloading artifacts.
-
-## How to enable GitHub Pages
+## One-time setup
 
 1. In the repo: **Settings → Pages**.
-2. **Source**: choose one of:
-   - **Deploy from a branch** – e.g. branch `main`, folder `/ (root)` or `/docs` (if you use Jekyll and put a site in `docs/`), or branch `gh-pages` and folder `/ (root)`.
-   - **GitHub Actions** – add a workflow that builds and uploads the site (e.g. [actions/upload-pages-artifact](https://github.com/actions/upload-pages-artifact) and [actions/deploy-pages](https://github.com/actions/deploy-pages)).
-3. After saving, the site is available at `https://<username>.github.io/<repo-name>/`.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Save. No need to create a branch or folder.
 
-## If you only want to publish docs
+After the next run of the “Playwright Tests” workflow, the report will be available at:
 
-- Put a simple `index.html` in a branch (e.g. `gh-pages`) or in `/docs` and enable Pages from that branch/folder.
-- Or add a step in CI that builds a static site from `docs/*.md` and deploys it via the GitHub Actions method above.
+**`https://<username>.github.io/AutomationExcercisesPlaywrightTypeScript/`**
 
-No changes to the current Playwright test setup are required for Pages; Pages is independent of how tests run.
+(Replace `<username>` with your GitHub username, or use the URL shown in Settings → Pages.)
+
+## How it works
+
+- The **test** job runs Playwright, generates the HTML report in `playwright-report/`, and uploads it as a normal artifact (downloadable from the run).
+- The **deploy-report** job runs after the test job (even when tests fail), uploads that report as a Pages artifact, and deploys it with `actions/deploy-pages`.
+- Each push/PR to `main` or `master` overwrites the Pages site with the latest report.
+
+## Optional: publish other content
+
+- To publish **project docs** (e.g. from `docs/` or a static site generator), you can add another workflow or job that builds the site and uses `upload-pages-artifact` + `deploy-pages`. Right now only the Playwright report is deployed.

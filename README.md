@@ -61,14 +61,14 @@ Other scenarios (single test, tags like `@smoke`, `--grep`, `--project`, `--work
 - **Base URL**: default `https://automationexercise.com`. Override with `BASE_URL` env var.
 - **Controlling runs**: `TEST_ENV`, `RUN_PROFILE`, `PW_GREP` and others – see `docs/RUNNING_TESTS.md` and `docs/CONFIGURATION.md`.
 - **Browsers**: `playwright.config.ts` defines projects for Chromium, Firefox and WebKit (Desktop).
-- **CI**: workflow in `.github/workflows/playwright.yml` runs tests on push/PR to `main` or `master` and saves the report as an artifact.
+- **CI**: workflow in `.github/workflows/playwright.yml` runs tests on push/PR to `main` or `master`, saves the report as an artifact, and **deploys the HTML report to GitHub Pages** (stable URL). One-time setup: **Settings → Pages → Source: GitHub Actions**.
 
 ## Documentation and progress
 
 - **README.md** (this file) – project overview and how to use it.
 - **docs/CONFIGURATION.md** – what can be configured and how (env vars, config files).
 - **docs/PROJECT_STATUS.md** – current status (done / to do). **Update it after larger code changes** so progress is tracked across sessions.
-- **docs/GITHUB_PAGES.md** – GitHub Pages is not configured by default; this doc explains how to enable it if you want to publish docs or reports.
+- **docs/GITHUB_PAGES.md** – Playwright report is deployed to GitHub Pages; one-time setup (Settings → Pages → Source: GitHub Actions) and report URL.
 
 ## License
 

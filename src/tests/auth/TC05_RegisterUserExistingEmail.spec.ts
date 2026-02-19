@@ -16,7 +16,7 @@ test.describe('TC05 Register User with existing email', () => {
 
     await homePage.goto();
     await dismissOverlays(page);
-    await expect(page.getByRole('heading', { name: /full-fledged practice website/i })).toBeVisible();
+    await homePage.expectLoaded();
 
     await homePage.header.signupLogin.click();
     let signupLoginPage = new SignupLoginPage(page);
@@ -59,7 +59,7 @@ test.describe('TC05 Register User with existing email', () => {
 
     await homePage.goto();
     await dismissOverlays(page);
-    await expect(page.getByRole('heading', { name: /full-fledged practice website/i })).toBeVisible();
+    await homePage.expectLoaded();
 
     await homePage.header.signupLogin.click();
     signupLoginPage = new SignupLoginPage(page);

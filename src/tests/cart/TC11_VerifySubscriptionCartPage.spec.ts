@@ -9,7 +9,7 @@ test.describe('TC11 Verify Subscription in Cart page', () => {
   }, async ({ page, homePage }) => {
     await homePage.goto();
     await dismissOverlays(page);
-    await expect(page.getByRole('heading', { name: /full-fledged practice website/i }).first()).toBeVisible();
+    await homePage.expectLoaded();
 
     await clickDismissingOverlays(page, homePage.header.cart);
     const cartPage = new CartPage(page);

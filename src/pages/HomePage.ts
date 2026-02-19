@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { HeaderNav } from './components/HeaderNav';
 
@@ -8,6 +8,11 @@ export class HomePage extends BasePage {
   constructor(page: Page) {
     super(page, '/');
     this.header = new HeaderNav(page);
+  }
+
+  /** Asserts the home page is loaded (header nav visible). */
+  async expectLoaded(): Promise<void> {
+    await expect(this.header.products).toBeVisible();
   }
 
   get signupLoginLink() {

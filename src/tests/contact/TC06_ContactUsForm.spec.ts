@@ -17,7 +17,7 @@ test.describe('TC06 Contact Us Form', () => {
 
     await homePage.goto();
     await dismissOverlays(page);
-    await expect(page.getByRole('heading', { name: /full-fledged practice website/i })).toBeVisible();
+    await homePage.expectLoaded();
 
     await homePage.header.contactUs.click();
     const contactUsPage = new ContactUsPage(page);
@@ -38,6 +38,6 @@ test.describe('TC06 Contact Us Form', () => {
 
     await contactUsPage.homeLink.click();
     await expect(page).toHaveURL(/\/(\?.*)?$/);
-    await expect(page.getByRole('heading', { name: /full-fledged practice website/i }).first()).toBeVisible();
+    await homePage.expectLoaded();
   });
 });
