@@ -1,24 +1,12 @@
-# Maven
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-.pom.xml.swp
-
-# IDE
-.idea/
-*.iml
-.vscode/
-.cursor/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+.env
+.env.local
 *.log
+.DS_Store
 
-# Test output / temp
-*_result.txt
+# Cursor IDE – rules and local config (not pushed to GitHub)
+.cursor/

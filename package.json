@@ -1,0 +1,35 @@
+{
+  "name": "automation-exercises-playwright-ts",
+  "version": "1.0.0",
+  "description": "Playwright + TypeScript template for web automation. Reusable for other websites.",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "report": "playwright show-report"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "typescript",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^25.2.3",
+    "eslint": "^10.0.0",
+    "eslint-plugin-playwright": "^2.5.1",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.56.0"
+  }
+}
