@@ -1,6 +1,14 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 
+export type PaymentDetails = {
+  nameOnCard: string;
+  cardNumber: string;
+  cvc: string;
+  expirationMonth: string;
+  expirationYear: string;
+};
+
 export class PaymentPage extends BasePage {
   constructor(page: Page) {
     super(page, '/payment');
@@ -37,6 +45,23 @@ export class PaymentPage extends BasePage {
 
   get orderSuccessMessage(): Locator {
     return this.page.getByText(/your order has been placed successfully!/i);
+  }
+
+  async fillPaymentDetails(payment: PaymentDetails): Promise<void> {
+    const expiration = payment.expirationMonth + payment.expirationYear;
+    const formInputs = this.page.locator('form').locator('input[type="text"]');
+    if ((await formInputs.count()) >= 4) {
+      await formInputs.nth(0).fill(payment.nameOnCard);
+      await formInputs.nth(1).fill(payment.cardNumber);
+      await formInputs.nth(2).fill(payment.cvc);
+      await formInputs.nth(3).fill(expiration);
+      return;
+    }
+
+    await this.nameOnCardInput.first().fill(payment.nameOnCard);
+    await this.cardNumberInput.first().fill(payment.cardNumber);
+    await this.cvcInput.first().fill(payment.cvc);
+    await this.expirationInput.first().fill(expiration);
   }
 
   /** Success message - assert text is present in page (element may be in DOM before visible). */

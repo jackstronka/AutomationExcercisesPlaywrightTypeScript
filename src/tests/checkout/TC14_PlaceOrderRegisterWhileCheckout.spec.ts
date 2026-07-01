@@ -4,14 +4,14 @@ import { AccountCreatedPage } from '@pages/AccountCreatedPage';
 import { AccountDeletedPage } from '@pages/AccountDeletedPage';
 import { CartPage } from '@pages/CartPage';
 import { CheckoutPage } from '@pages/CheckoutPage';
-import { PaymentPage } from '@pages/PaymentPage';
+import { PaymentPage, type PaymentDetails } from '@pages/PaymentPage';
 import { ProductsPage } from '@pages/ProductsPage';
 import { SignupAccountInfoPage } from '@pages/SignupAccountInfoPage';
 import { SignupLoginPage } from '@pages/SignupLoginPage';
 import { defaultRegistrationData } from '@testdata/registration';
 import { uniqueEmail, uniqueName } from '@utils/testData';
 
-const PAYMENT = {
+const PAYMENT: PaymentDetails = {
   nameOnCard: 'Test User',
   cardNumber: '4111111111111111',
   cvc: '123',
@@ -32,11 +32,9 @@ test.describe('TC14 Place Order: Register while Checkout', () => {
 
     await clickDismissingOverlays(page, homePage.header.products);
     const productsPage = new ProductsPage(page);
-    await page.waitForURL(/\/products/, { waitUntil: 'load' });
+    await page.waitForURL(/\/products/, { waitUntil: 'domcontentloaded' });
     await expect(productsPage.productCards.first()).toBeVisible({ timeout: 15000 });
-    await productsPage.productCards.first().scrollIntoViewIfNeeded();
-    await productsPage.productCards.first().hover();
-    await productsPage.addToCartLinks.first().click({ force: true });
+    await productsPage.addProductToCart(0);
     await expect(productsPage.viewCartButton).toBeVisible({ timeout: 5000 });
     await productsPage.viewCartButton.first().click();
 
@@ -48,12 +46,7 @@ test.describe('TC14 Place Order: Register while Checkout', () => {
 
     const checkoutPage = new CheckoutPage(page);
     await expect(checkoutPage.registerLoginLink.first()).toBeVisible({ timeout: 15000 });
-    const registerLogin = checkoutPage.registerLoginLink.first();
-    await registerLogin.click();
-    await page.waitForLoadState('load');
-    if (!(await page.url().includes('/login'))) {
-      await page.goto('/login');
-    }
+    await checkoutPage.goToRegisterLogin();
     const signupLoginPage = new SignupLoginPage(page);
     await signupLoginPage.expectLoaded();
     await signupLoginPage.signupNameInput.fill(name);
@@ -102,21 +95,8 @@ test.describe('TC14 Place Order: Register while Checkout', () => {
     await page.waitForURL(/payment/, { waitUntil: 'domcontentloaded' });
 
     const paymentPage = new PaymentPage(page);
-    const formInputs = page.locator('form').locator('input[type="text"]');
-    const count = await formInputs.count();
-    if (count >= 4) {
-      await formInputs.nth(0).fill(PAYMENT.nameOnCard);
-      await formInputs.nth(1).fill(PAYMENT.cardNumber);
-      await formInputs.nth(2).fill(PAYMENT.cvc);
-      await formInputs.nth(3).fill(PAYMENT.expirationMonth + PAYMENT.expirationYear);
-    } else {
-      await paymentPage.nameOnCardInput.first().fill(PAYMENT.nameOnCard);
-      await paymentPage.cardNumberInput.first().fill(PAYMENT.cardNumber);
-      await paymentPage.cvcInput.first().fill(PAYMENT.cvc);
-      await paymentPage.expirationInput.first().fill(PAYMENT.expirationMonth + PAYMENT.expirationYear);
-    }
+    await paymentPage.fillPaymentDetails(PAYMENT);
     await paymentPage.payAndConfirmButton.click();
-    await page.waitForLoadState('networkidle').catch(() => {});
 
     await paymentPage.expectOrderSuccess();
 

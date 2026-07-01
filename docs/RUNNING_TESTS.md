@@ -154,6 +154,17 @@ test.describe.configure({ mode: 'serial' });
 
 ## Common ways to “manage runs”
 
+## Speed and performance
+
+- **CI**: profile uses **4 workers** per project for faster runs; override with `PW_WORKERS` if needed.
+- **Quick local run**: `npx playwright test --project=chromium` (one browser only).
+- **Subset**: `--grep "@smoke"` or a single spec file to shorten feedback.
+- **Navigation**: tests use `waitUntil: 'domcontentloaded'` where possible (faster than `load`).
+- **Global timeouts**: `actionTimeout` 15s, `expect` 10s in config; override in a test only when necessary.
+- **Startup**: use `goToHomeReady(page, homePage)` from `@utils/testHelpers` at test start instead of repeating goto + dismissOverlays + expectLoaded.
+
+## Common ways to "manage runs"
+
 - **Selection**: `--project`, `--grep`, `--grep-invert`, `--list`
 - **Parallelism**: `--workers`, `fullyParallel: true` (in config)
 - **Stability in CI**: `retries` and `trace: on-first-retry` (in `ci` profile)

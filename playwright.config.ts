@@ -1,10 +1,35 @@
-import { defineConfig, devices } from '@playwright/test';
-import { resolveRunConfig } from './src/config/testRunConfig';
+import { defineConfig, type Project } from '@playwright/test';
+import { resolveRunConfig, type BrowserProject } from './src/config/testRunConfig';
 
-const run = resolveRunConfig(process.env);
+const run = resolveRunConfig(process.env, process.argv);
 
 // Only Chromium supports --start-maximized. Firefox and WebKit do not support
 // window maximization/size in launch args – they work correctly without extra args.
+const browserProjects: Record<BrowserProject, Project> = {
+  chromium: {
+    name: 'chromium',
+    use: {
+      browserName: 'chromium',
+      viewport: null,
+      launchOptions: { args: ['--start-maximized'] },
+    },
+  },
+  firefox: {
+    name: 'firefox',
+    use: {
+      browserName: 'firefox',
+      viewport: null,
+    },
+  },
+  webkit: {
+    name: 'webkit',
+    use: {
+      browserName: 'webkit',
+      viewport: null,
+    },
+  },
+};
+
 export default defineConfig({
   testDir: './src/tests',
   fullyParallel: true,
@@ -19,29 +44,9 @@ export default defineConfig({
     headless: run.headless,
     trace: run.trace,
     screenshot: run.screenshot,
+    actionTimeout: 15000,
+    navigationTimeout: 20000,
   },
-  projects: [
-    {
-      name: 'chromium',
-      use: {
-        browserName: 'chromium',
-        viewport: null,
-        launchOptions: { args: ['--start-maximized'] },
-      },
-    },
-    {
-      name: 'firefox',
-      use: {
-        browserName: 'firefox',
-        viewport: null,
-      },
-    },
-    {
-      name: 'webkit',
-      use: {
-        browserName: 'webkit',
-        viewport: null,
-      },
-    },
-  ],
+  expect: { timeout: 10000 },
+  projects: run.browsers.map((browser) => browserProjects[browser]),
 });

@@ -39,7 +39,12 @@ Full list of configurable options: where they are set, what values they accept, 
 | Option | Env variable | Values / default | How to set |
 |--------|--------------|-------------------|------------|
 | **Retries** | `PW_RETRIES` or `RETRIES` | Integer. In this project: **0** (local and ci) – we do not rerun a test after failure. | `$env:PW_RETRIES="2"` – enables 2 retries (if you want them). |
-| **Workers** | `PW_WORKERS` or `WORKERS` | Number of worker processes per project. Local: unset (auto). CI: **2**. | `$env:PW_WORKERS="4"` or `npx playwright test --workers=4` |
+| **Workers** | `PW_WORKERS` or `WORKERS` | Parallel test processes (global for the run). **Local: 1**. **CI: 4**. | `$env:PW_WORKERS="4"` or `npx playwright test --workers=4` |
+| **Browsers (projects)** | `PW_PROJECTS` or `BROWSERS` | Comma-separated: `chromium`, `firefox`, `webkit`. **Local default: `chromium`**. **CI default: all three**. CLI `--project` overrides profile/env for that run. | `$env:PW_PROJECTS="chromium,firefox"` or `npx playwright test --project=firefox` |
+
+**Priority (browsers):** `--project` (CLI) → `PW_PROJECTS` / `BROWSERS` (env) → profile default in `testRunConfig.ts`.
+
+**Note:** Playwright does not support different `workers` per browser in one command. Max parallelism ≈ `workers × active browsers`. To run one browser sequentially: profile `local` (workers `1`, chromium only) or `--project=chromium --workers=1`.
 
 ### Which tests to run
 
@@ -65,8 +70,11 @@ These are set **only in** `playwright.config.ts` (no env vars for them in this p
 | **launchOptions** | Chromium only | **Chromium:** `args: ['--start-maximized']` – window starts maximized. **Firefox and WebKit:** no `launchOptions` – these browsers do not support window size/maximization args in Playwright; they use default window size. |
 | **testDir** | `./src/tests` | Directory containing test files. |
 | **fullyParallel** | `true` | Tests in one file can run in parallel. |
+| **actionTimeout** | `15000` | Max time for a single action (click, fill, etc.). |
+| **navigationTimeout** | `20000` | Max time for navigation. |
+| **expect.timeout** | `10000` | Default timeout for assertions; override per test if needed. |
 | **reporter** | `[['html', { open: 'never' }]]` | HTML report, no auto-open. |
-| **projects** | chromium, firefox, webkit | List of browsers. Add/remove by editing the `projects` array. |
+| **projects** | from `run.browsers` | Active browsers (`chromium`, `firefox`, `webkit`). Defined in `browserProjects` map; filtered by `testRunConfig`. |
 
 ---
 
@@ -87,7 +95,7 @@ npm run test
 
 ## Changing default values permanently
 
-- **Retries, workers, trace, screenshot** – edit the `profiles` object in **`src/config/testRunConfig.ts`** (e.g. change `ci.retries` from 0 to 2).
+- **Retries, workers, browsers, trace, screenshot** – edit the `profiles` object in **`src/config/testRunConfig.ts`** (e.g. change `ci.workers` or `local.browsers`).
 - **Viewport, reporter, projects** – edit **`playwright.config.ts`**.
 - **Base URL per env (default, local, …)** – edit the `envs` object in **`src/config/testRunConfig.ts`**.
 

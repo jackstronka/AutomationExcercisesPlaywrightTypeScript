@@ -53,6 +53,24 @@ export class CartPage extends BasePage {
     return this.page.locator('.cart_total_price').or(this.page.getByText(/total/i).locator('..'));
   }
 
+  cartRowPrice(rowIndex: number): Locator {
+    return this.cartRows.nth(rowIndex).locator('.cart_price p').first();
+  }
+
+  cartRowQuantity(rowIndex: number): Locator {
+    return this.cartRows.nth(rowIndex).locator('.cart_quantity').first();
+  }
+
+  cartRowTotal(rowIndex: number): Locator {
+    return this.cartRows.nth(rowIndex).locator('.cart_total').first();
+  }
+
+  async expectCartItemDetails(rowIndex: number, quantity: string): Promise<void> {
+    await expect(this.cartRowPrice(rowIndex)).not.toBeEmpty();
+    await expect(this.cartRowQuantity(rowIndex)).toHaveText(quantity);
+    await expect(this.cartRowTotal(rowIndex)).not.toBeEmpty();
+  }
+
   async expectLoaded(): Promise<void> {
     await expect(this.shoppingCartHeading.or(this.cartEmptyMessage)).toBeVisible();
   }

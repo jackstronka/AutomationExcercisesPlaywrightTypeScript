@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { clickDismissingOverlays } from './components/OverlayHelper';
 
 export class CheckoutPage extends BasePage {
   constructor(page: Page) {
@@ -24,5 +25,17 @@ export class CheckoutPage extends BasePage {
 
   get placeOrderButton(): Locator {
     return this.page.getByRole('link', { name: /place order/i }).or(this.page.getByRole('button', { name: /place order/i }));
+  }
+
+  async goToRegisterLogin(): Promise<void> {
+    await clickDismissingOverlays(this.page, this.registerLoginLink.first());
+    const reachedLogin = await this.page
+      .waitForURL(/\/login/, { timeout: 5000 })
+      .then(() => true)
+      .catch(() => false);
+    if (!reachedLogin) {
+      await this.page.goto('/login');
+    }
+    await expect(this.page).toHaveURL(/\/login/);
   }
 }

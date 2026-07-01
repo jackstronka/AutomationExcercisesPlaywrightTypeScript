@@ -18,16 +18,8 @@ test.describe('TC09 Search Product', () => {
     await productsPage.expectLoaded();
     await expect(page).toHaveURL(/\/products/);
 
-    await productsPage.header.searchInput.fill(SEARCH_TERM);
-    const searchForm = page.locator('form').filter({ has: productsPage.header.searchInput });
-    if ((await searchForm.count()) > 0) {
-      await searchForm.first().evaluate((el: HTMLFormElement) => el.submit());
-    } else {
-      await page.goto(`/products?search=${encodeURIComponent(SEARCH_TERM)}`);
-    }
-    await expect(productsPage.searchedProductsHeading).toBeVisible();
+    await productsPage.search(SEARCH_TERM);
     await expect(productsPage.searchedResultItems.first()).toBeVisible();
-    const count = await productsPage.searchedResultItems.count();
-    expect(count).toBeGreaterThan(0);
+    await expect(productsPage.searchedResultItems).not.toHaveCount(0);
   });
 });

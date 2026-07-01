@@ -1,10 +1,10 @@
 import { test, expect } from '@fixtures/pages';
-import { dismissOverlays } from '@pages/components/OverlayHelper';
 import { AccountCreatedPage } from '@pages/AccountCreatedPage';
 import { AccountDeletedPage } from '@pages/AccountDeletedPage';
 import { SignupAccountInfoPage } from '@pages/SignupAccountInfoPage';
 import { SignupLoginPage } from '@pages/SignupLoginPage';
 import { defaultRegistrationData } from '@testdata/registration';
+import { goToHomeReady } from '@utils/testHelpers';
 import { uniqueEmail, uniqueName } from '@utils/testData';
 
 test.describe('TC01 Register User', () => {
@@ -15,9 +15,7 @@ test.describe('TC01 Register User', () => {
     const email = uniqueEmail();
     const data = { ...defaultRegistrationData, name, email };
 
-    await homePage.goto();
-    await dismissOverlays(page);
-    await homePage.expectLoaded();
+    await goToHomeReady(page, homePage);
 
     await homePage.header.signupLogin.click();
     const signupLoginPage = new SignupLoginPage(page);

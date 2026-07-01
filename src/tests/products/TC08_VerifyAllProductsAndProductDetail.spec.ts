@@ -1,15 +1,14 @@
 import { test, expect } from '@fixtures/pages';
-import { clickDismissingOverlays, dismissOverlays } from '@pages/components/OverlayHelper';
+import { clickDismissingOverlays } from '@pages/components/OverlayHelper';
 import { ProductDetailPage } from '@pages/ProductDetailPage';
 import { ProductsPage } from '@pages/ProductsPage';
+import { goToHomeReady } from '@utils/testHelpers';
 
 test.describe('TC08 Verify All Products and product detail page', () => {
   test('navigate to All Products, verify list, open first product and verify details', {
     tag: ['@products'],
   }, async ({ page, homePage }) => {
-    await homePage.goto();
-    await dismissOverlays(page);
-    await homePage.expectLoaded();
+    await goToHomeReady(page, homePage);
 
     await clickDismissingOverlays(page, homePage.header.products);
     const productsPage = new ProductsPage(page);

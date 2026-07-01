@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { clickDismissingOverlays, dismissOverlays } from './components/OverlayHelper';
 import { HeaderNav } from './components/HeaderNav';
 
 export class ProductsPage extends BasePage {
@@ -51,6 +52,31 @@ export class ProductsPage extends BasePage {
 
   get viewCartButton(): Locator {
     return this.page.getByRole('link', { name: /view cart/i }).or(this.page.getByRole('button', { name: /view cart/i }));
+  }
+
+  addToCartLinkInCard(productIndex: number): Locator {
+    return this.productCards.nth(productIndex).locator('a').filter({ hasText: /add to cart/i }).first();
+  }
+
+  async addProductToCart(productIndex: number): Promise<void> {
+    const card = this.productCards.nth(productIndex);
+    await card.scrollIntoViewIfNeeded();
+    await dismissOverlays(this.page);
+    await card.hover();
+    const addLink = this.addToCartLinkInCard(productIndex);
+    await expect(addLink).toBeVisible({ timeout: 10000 });
+    await clickDismissingOverlays(this.page, addLink, { timeout: 5000 });
+  }
+
+  async search(term: string): Promise<void> {
+    await this.header.searchInput.fill(term);
+    const searchForm = this.page.locator('form').filter({ has: this.header.searchInput });
+    if ((await searchForm.count()) > 0) {
+      await searchForm.first().evaluate((el: HTMLFormElement) => el.submit());
+    } else {
+      await this.page.goto(`/products?search=${encodeURIComponent(term)}`);
+    }
+    await expect(this.searchedProductsHeading).toBeVisible();
   }
 
   async expectLoaded(): Promise<void> {
