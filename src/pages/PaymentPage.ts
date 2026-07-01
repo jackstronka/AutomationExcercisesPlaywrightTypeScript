@@ -55,6 +55,7 @@ export class PaymentPage extends BasePage {
       await formInputs.nth(1).fill(payment.cardNumber);
       await formInputs.nth(2).fill(payment.cvc);
       await formInputs.nth(3).fill(expiration);
+      await this.expectPaymentFormInputsFilled(formInputs, payment, expiration);
       return;
     }
 
@@ -62,6 +63,25 @@ export class PaymentPage extends BasePage {
     await this.cardNumberInput.first().fill(payment.cardNumber);
     await this.cvcInput.first().fill(payment.cvc);
     await this.expirationInput.first().fill(expiration);
+    await this.expectPaymentDetailsFilled(payment, expiration);
+  }
+
+  private async expectPaymentFormInputsFilled(
+    formInputs: Locator,
+    payment: PaymentDetails,
+    expiration: string,
+  ): Promise<void> {
+    await expect(formInputs.nth(0)).toHaveValue(payment.nameOnCard);
+    await expect(formInputs.nth(1)).toHaveValue(payment.cardNumber);
+    await expect(formInputs.nth(2)).toHaveValue(payment.cvc);
+    await expect(formInputs.nth(3)).toHaveValue(expiration);
+  }
+
+  private async expectPaymentDetailsFilled(payment: PaymentDetails, expiration: string): Promise<void> {
+    await expect(this.nameOnCardInput.first()).toHaveValue(payment.nameOnCard);
+    await expect(this.cardNumberInput.first()).toHaveValue(payment.cardNumber);
+    await expect(this.cvcInput.first()).toHaveValue(payment.cvc);
+    await expect(this.expirationInput.first()).toHaveValue(expiration);
   }
 
   /** Success message - assert text is present in page (element may be in DOM before visible). */

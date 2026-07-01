@@ -1,6 +1,7 @@
 import { test, expect } from '@fixtures/pages';
-import { clickDismissingOverlays, dismissOverlays } from '@pages/components/OverlayHelper';
+import { clickDismissingOverlays } from '@pages/components/OverlayHelper';
 import { ProductsPage } from '@pages/ProductsPage';
+import { goToHomeReady } from '@utils/testHelpers';
 
 const SEARCH_TERM = 'top';
 
@@ -8,9 +9,7 @@ test.describe('TC09 Search Product', () => {
   test('search product and verify SEARCHED PRODUCTS and related results', {
     tag: ['@products'],
   }, async ({ page, homePage }) => {
-    await homePage.goto();
-    await dismissOverlays(page);
-    await homePage.expectLoaded();
+    await goToHomeReady(page, homePage);
 
     await clickDismissingOverlays(page, homePage.header.products);
     const productsPage = new ProductsPage(page);

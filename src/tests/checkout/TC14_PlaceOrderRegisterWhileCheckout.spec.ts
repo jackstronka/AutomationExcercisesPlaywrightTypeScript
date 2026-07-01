@@ -1,5 +1,5 @@
 import { test, expect } from '@fixtures/pages';
-import { clickDismissingOverlays, dismissOverlays } from '@pages/components/OverlayHelper';
+import { clickDismissingOverlays } from '@pages/components/OverlayHelper';
 import { AccountCreatedPage } from '@pages/AccountCreatedPage';
 import { AccountDeletedPage } from '@pages/AccountDeletedPage';
 import { CartPage } from '@pages/CartPage';
@@ -9,6 +9,7 @@ import { ProductsPage } from '@pages/ProductsPage';
 import { SignupAccountInfoPage } from '@pages/SignupAccountInfoPage';
 import { SignupLoginPage } from '@pages/SignupLoginPage';
 import { defaultRegistrationData } from '@testdata/registration';
+import { goToHomeReady } from '@utils/testHelpers';
 import { uniqueEmail, uniqueName } from '@utils/testData';
 
 const PAYMENT: PaymentDetails = {
@@ -26,9 +27,7 @@ test.describe('TC14 Place Order: Register while Checkout', () => {
     const name = uniqueName();
     const email = uniqueEmail();
 
-    await homePage.goto();
-    await dismissOverlays(page);
-    await homePage.expectLoaded();
+    await goToHomeReady(page, homePage);
 
     await clickDismissingOverlays(page, homePage.header.products);
     const productsPage = new ProductsPage(page);
@@ -49,30 +48,12 @@ test.describe('TC14 Place Order: Register while Checkout', () => {
     await checkoutPage.goToRegisterLogin();
     const signupLoginPage = new SignupLoginPage(page);
     await signupLoginPage.expectLoaded();
-    await signupLoginPage.signupNameInput.fill(name);
-    await signupLoginPage.signupEmailInput.fill(email);
-    await signupLoginPage.signupButton.click();
+    const data = { ...defaultRegistrationData, name, email };
+    await signupLoginPage.signup(name, email);
 
     const accountInfoPage = new SignupAccountInfoPage(page);
     await accountInfoPage.expectLoaded();
-    const data = { ...defaultRegistrationData, name, email };
-    await accountInfoPage.titleMr.check();
-    await accountInfoPage.passwordInput.fill(data.password);
-    await accountInfoPage.dayDropdown.selectOption(data.day);
-    await accountInfoPage.monthDropdown.selectOption(data.month);
-    await accountInfoPage.yearDropdown.selectOption(data.year);
-    await accountInfoPage.setNewsletter(data.newsletter);
-    await accountInfoPage.setSpecialOffers(data.specialOffers);
-    await accountInfoPage.firstNameInput.fill(data.firstName);
-    await accountInfoPage.lastNameInput.fill(data.lastName);
-    await accountInfoPage.companyInput.fill(data.company);
-    await accountInfoPage.address1Input.fill(data.address1);
-    await accountInfoPage.address2Input.fill(data.address2);
-    await accountInfoPage.countryDropdown.selectOption({ label: data.country });
-    await accountInfoPage.stateInput.fill(data.state);
-    await accountInfoPage.cityInput.fill(data.city);
-    await accountInfoPage.zipcodeInput.fill(data.zipcode);
-    await accountInfoPage.mobileInput.fill(data.mobile);
+    await accountInfoPage.fillAccountDetails(data);
     await accountInfoPage.createAccountButton.click();
 
     const accountCreatedPage = new AccountCreatedPage(page);
@@ -90,8 +71,7 @@ test.describe('TC14 Place Order: Register while Checkout', () => {
     await expect(checkoutPage.addressDetailsHeading.first()).toBeVisible({ timeout: 5000 });
     await expect(checkoutPage.reviewOrderHeading.first()).toBeVisible({ timeout: 5000 });
 
-    await checkoutPage.commentTextarea.fill('Please deliver in the morning.');
-    await checkoutPage.placeOrderButton.first().click();
+    await checkoutPage.placeOrder('Please deliver in the morning.');
     await page.waitForURL(/payment/, { waitUntil: 'domcontentloaded' });
 
     const paymentPage = new PaymentPage(page);
@@ -100,7 +80,7 @@ test.describe('TC14 Place Order: Register while Checkout', () => {
 
     await paymentPage.expectOrderSuccess();
 
-    await homePage.header.deleteAccount.click();
+    await homePage.header.clickDeleteAccount();
     const accountDeletedPage = new AccountDeletedPage(page);
     await accountDeletedPage.expectLoaded();
     await accountDeletedPage.continueButton.click();

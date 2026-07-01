@@ -38,4 +38,12 @@ export class CheckoutPage extends BasePage {
     }
     await expect(this.page).toHaveURL(/\/login/);
   }
+
+  async placeOrder(comment?: string): Promise<void> {
+    if (comment) {
+      await this.commentTextarea.fill(comment);
+      await expect(this.commentTextarea).toHaveValue(comment);
+    }
+    await this.placeOrderButton.first().click();
+  }
 }

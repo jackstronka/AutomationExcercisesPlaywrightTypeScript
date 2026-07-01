@@ -71,6 +71,14 @@ export class CartPage extends BasePage {
     await expect(this.cartRowTotal(rowIndex)).not.toBeEmpty();
   }
 
+  async subscribe(email: string): Promise<void> {
+    await this.subscriptionHeading.scrollIntoViewIfNeeded();
+    await expect(this.subscriptionHeading).toBeVisible();
+    await this.subscriptionEmailInput.fill(email);
+    await expect(this.subscriptionEmailInput).toHaveValue(email);
+    await this.subscriptionArrowButton.click();
+  }
+
   async expectLoaded(): Promise<void> {
     await expect(this.shoppingCartHeading.or(this.cartEmptyMessage)).toBeVisible();
   }

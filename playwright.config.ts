@@ -32,6 +32,7 @@ const browserProjects: Record<BrowserProject, Project> = {
 
 export default defineConfig({
   testDir: './src/tests',
+  timeout: 60_000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: run.retries,

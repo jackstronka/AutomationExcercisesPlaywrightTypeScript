@@ -1,6 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { HeaderNav } from './components/HeaderNav';
+import type { RegistrationData } from '@testdata/registration';
 
 export class SignupAccountInfoPage extends BasePage {
   readonly header: HeaderNav;
@@ -98,6 +99,50 @@ export class SignupAccountInfoPage extends BasePage {
   async setSpecialOffers(checked: boolean): Promise<void> {
     if (checked) await this.specialOffersCheckbox.check();
     else await this.specialOffersCheckbox.uncheck();
+  }
+
+  async fillAccountDetails(data: RegistrationData): Promise<void> {
+    if (data.title === 'Mr') await this.titleMr.check();
+    else await this.titleMrs.check();
+    await this.passwordInput.fill(data.password);
+    await this.dayDropdown.selectOption(data.day);
+    await this.monthDropdown.selectOption(data.month);
+    await this.yearDropdown.selectOption(data.year);
+    await this.setNewsletter(data.newsletter);
+    await this.setSpecialOffers(data.specialOffers);
+    await this.firstNameInput.fill(data.firstName);
+    await this.lastNameInput.fill(data.lastName);
+    await this.companyInput.fill(data.company);
+    await this.address1Input.fill(data.address1);
+    await this.address2Input.fill(data.address2);
+    await this.countryDropdown.selectOption({ label: data.country });
+    await this.stateInput.fill(data.state);
+    await this.cityInput.fill(data.city);
+    await this.zipcodeInput.fill(data.zipcode);
+    await this.mobileInput.fill(data.mobile);
+    await this.expectAccountDetailsFilled(data);
+  }
+
+  private async expectAccountDetailsFilled(data: RegistrationData): Promise<void> {
+    if (data.title === 'Mr') await expect(this.titleMr).toBeChecked();
+    else await expect(this.titleMrs).toBeChecked();
+    await expect(this.passwordInput).toHaveValue(data.password);
+    await expect(this.dayDropdown).toHaveValue(data.day);
+    await expect(this.monthDropdown).toHaveValue(data.month);
+    await expect(this.yearDropdown).toHaveValue(data.year);
+    if (data.newsletter) await expect(this.newsletterCheckbox).toBeChecked();
+    else await expect(this.newsletterCheckbox).not.toBeChecked();
+    if (data.specialOffers) await expect(this.specialOffersCheckbox).toBeChecked();
+    else await expect(this.specialOffersCheckbox).not.toBeChecked();
+    await expect(this.firstNameInput).toHaveValue(data.firstName);
+    await expect(this.lastNameInput).toHaveValue(data.lastName);
+    await expect(this.companyInput).toHaveValue(data.company);
+    await expect(this.address1Input).toHaveValue(data.address1);
+    await expect(this.address2Input).toHaveValue(data.address2);
+    await expect(this.stateInput).toHaveValue(data.state);
+    await expect(this.cityInput).toHaveValue(data.city);
+    await expect(this.zipcodeInput).toHaveValue(data.zipcode);
+    await expect(this.mobileInput).toHaveValue(data.mobile);
   }
 
   async expectLoaded(): Promise<void> {

@@ -4,7 +4,7 @@ Template project for E2E automation tests with **Playwright** and **TypeScript**
 
 ## Requirements
 
-- Node.js 18+
+- Node.js 22+ (CI uses 22; 18+ may work locally)
 - npm
 
 ## Installation

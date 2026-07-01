@@ -58,4 +58,12 @@ export class HomePage extends BasePage {
   async openSignupLogin(): Promise<void> {
     await this.signupLoginLink.click();
   }
+
+  async subscribe(email: string): Promise<void> {
+    await this.subscriptionHeading.scrollIntoViewIfNeeded();
+    await expect(this.subscriptionHeading).toBeVisible();
+    await this.subscriptionEmailInput.fill(email);
+    await expect(this.subscriptionEmailInput).toHaveValue(email);
+    await this.subscriptionArrowButton.click();
+  }
 }

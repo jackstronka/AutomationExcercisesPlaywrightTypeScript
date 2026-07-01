@@ -50,5 +50,35 @@ export class ContactUsPage extends BasePage {
   async expectLoaded(): Promise<void> {
     await expect(this.getInTouchHeading).toBeVisible();
   }
+
+  async fillContactForm(data: { name: string; email: string; subject: string; message: string }): Promise<void> {
+    await this.nameInput.first().fill(data.name);
+    await this.emailInput.first().fill(data.email);
+    await this.subjectInput.first().fill(data.subject);
+    await this.messageInput.first().fill(data.message);
+    await this.expectContactFormFilled(data);
+  }
+
+  private async expectContactFormFilled(data: {
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+  }): Promise<void> {
+    await expect(this.nameInput.first()).toHaveValue(data.name);
+    await expect(this.emailInput.first()).toHaveValue(data.email);
+    await expect(this.subjectInput.first()).toHaveValue(data.subject);
+    await expect(this.messageInput.first()).toHaveValue(data.message);
+  }
+
+  async submitContactForm(
+    data: { name: string; email: string; subject: string; message: string },
+    filePath: string,
+  ): Promise<void> {
+    await this.fillContactForm(data);
+    await this.fileInput.setInputFiles(filePath);
+    this.page.once('dialog', (dialog) => dialog.accept());
+    await this.submitButton.click();
+  }
 }
 

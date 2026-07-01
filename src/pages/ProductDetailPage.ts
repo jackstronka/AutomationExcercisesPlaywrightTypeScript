@@ -55,4 +55,11 @@ export class ProductDetailPage extends BasePage {
     await expect(this.condition).toBeVisible();
     await expect(this.brand).toBeVisible();
   }
+
+  async addToCartWithQuantity(quantity: number): Promise<void> {
+    const quantityText = String(quantity);
+    await this.quantityInput.fill(quantityText);
+    await expect(this.quantityInput).toHaveValue(quantityText);
+    await this.addToCartButton.click();
+  }
 }

@@ -1,4 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
+import { clickDismissingOverlays } from './OverlayHelper';
 
 export class HeaderNav {
   constructor(private readonly page: Page) {}
@@ -49,6 +50,14 @@ export class HeaderNav {
 
   get logout(): Locator {
     return this.page.getByRole('link', { name: /logout/i });
+  }
+
+  async clickDeleteAccount(): Promise<void> {
+    await clickDismissingOverlays(this.page, this.deleteAccount);
+  }
+
+  async clickLogout(): Promise<void> {
+    await clickDismissingOverlays(this.page, this.logout);
   }
 }
 

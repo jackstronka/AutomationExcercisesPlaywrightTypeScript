@@ -62,5 +62,29 @@ export class SignupLoginPage extends BasePage {
   async expectLoaded(): Promise<void> {
     await expect(this.loginToYourAccountHeading.or(this.newUserSignupHeading).first()).toBeVisible();
   }
+
+  async signup(name: string, email: string): Promise<void> {
+    await this.signupNameInput.fill(name);
+    await this.signupEmailInput.fill(email);
+    await this.expectSignupFormFilled(name, email);
+    await this.signupButton.click();
+  }
+
+  async login(email: string, password: string): Promise<void> {
+    await this.loginEmailInput.fill(email);
+    await this.loginPasswordInput.fill(password);
+    await this.expectLoginFormFilled(email, password);
+    await this.loginButton.click();
+  }
+
+  private async expectSignupFormFilled(name: string, email: string): Promise<void> {
+    await expect(this.signupNameInput).toHaveValue(name);
+    await expect(this.signupEmailInput).toHaveValue(email);
+  }
+
+  private async expectLoginFormFilled(email: string, password: string): Promise<void> {
+    await expect(this.loginEmailInput).toHaveValue(email);
+    await expect(this.loginPasswordInput).toHaveValue(password);
+  }
 }
 

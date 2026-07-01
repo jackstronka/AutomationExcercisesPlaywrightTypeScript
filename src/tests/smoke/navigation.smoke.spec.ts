@@ -1,14 +1,13 @@
 import { test, expect } from '@fixtures/pages';
-import { dismissOverlays } from '@pages/components/OverlayHelper';
 import { CartPage } from '@pages/CartPage';
 import { ContactUsPage } from '@pages/ContactUsPage';
 import { ProductsPage } from '@pages/ProductsPage';
 import { SignupLoginPage } from '@pages/SignupLoginPage';
+import { goToHomeReady } from '@utils/testHelpers';
 
 test.describe('Smoke: navigation', () => {
   test('key pages are reachable (direct URL)', { tag: ['@smoke'] }, async ({ page, homePage }) => {
-    await homePage.goto();
-    await dismissOverlays(page);
+    await goToHomeReady(page, homePage);
 
     await page.goto('/products');
     await new ProductsPage(page).expectLoaded();
@@ -26,4 +25,3 @@ test.describe('Smoke: navigation', () => {
     await expect(page).toHaveURL(/\/$/);
   });
 });
-
