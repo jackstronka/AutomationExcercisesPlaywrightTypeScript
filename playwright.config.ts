@@ -43,6 +43,9 @@ export default defineConfig({
   use: {
     baseURL: run.baseURL,
     headless: run.headless,
+    // Force English UI so the site (cookie consent) renders in English and Chrome does not
+    // show a native "translate this page" bar (browser UI, not clickable via locators).
+    locale: 'en-US',
     trace: run.trace,
     screenshot: run.screenshot,
     actionTimeout: 15000,

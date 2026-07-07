@@ -44,58 +44,13 @@ export async function dismissAdLikeOverlays(page: Page, maxAttempts = 5): Promis
   }
 }
 
-const LANGUAGE_BAR_SELECTORS = [
-  '[class*="language"], [class*="locale"], [id*="language"], [id*="locale"]',
-  '[class*="gtranslate"], [class*="translate"], [id*="translate"]',
-  '[class*="weglot"], [class*="wpml"], [class*="lang-switch"]',
-  '[class*="language-bar"], [class*="language-selector"]',
-];
-
-/** Short timeout – if element is visible, click in ~400 ms; if not, we give up quickly. */
-const LANG_TRY_MS = 400;
-/** Max time for first wave (4 attempts in parallel) – then optional loop over LANGUAGE_BAR. */
-const LANG_TOTAL_MS = 900;
-
-export async function dismissLanguageSelectorIfPresent(page: Page): Promise<void> {
-  const tryAngielski = () => page.getByText('angielski', { exact: true }).or(page.getByRole('link', { name: /angielski/i })).first().click({ timeout: LANG_TRY_MS });
-  const inGoogTe = page.locator('[class*="goog-te"], [class*="skiptranslate"]').filter({ has: page.getByText(/angielski|polski/i) });
-  const tryGoogTe = () => inGoogTe.getByText('angielski').or(inGoogTe.getByRole('link', { name: /angielski/i })).first().click({ timeout: LANG_TRY_MS });
-  const tryFrame = () => page.frameLocator('iframe[class*="goog-te"], iframe[title*="Translate"]').getByText('angielski').first().click({ timeout: LANG_TRY_MS });
-  const englishLink = page.getByRole('link', { name: /english|angielski/i }).or(page.getByRole('button', { name: /english|angielski/i })).or(page.getByText(/^English$|^angielski$/i));
-  const tryEnglish = () => englishLink.first().click({ timeout: LANG_TRY_MS });
-
-  const firstSuccess = await Promise.race([
-    tryAngielski().then(() => true).catch(() => false),
-    tryGoogTe().then(() => true).catch(() => false),
-    tryFrame().then(() => true).catch(() => false),
-    tryEnglish().then(() => true).catch(() => false),
-    new Promise<false>((resolve) => setTimeout(() => resolve(false), LANG_TOTAL_MS)),
-  ]);
-  if (firstSuccess === true) return;
-
-  for (const selector of LANGUAGE_BAR_SELECTORS) {
-    const bar = page.locator(selector).filter({ has: page.getByText(/polski|english/i) }).first();
-    try {
-      await bar.getByRole('button', { name: CLOSE_BUTTON_NAMES }).or(bar.locator('[aria-label*="close" i], [title*="close" i], [class*="close"]')).first().click({ timeout: LANG_TRY_MS });
-      return;
-    } catch {
-      //
-    }
-    try {
-      await bar.getByRole('link', { name: /english/i }).or(bar.getByText('English').first()).first().click({ timeout: LANG_TRY_MS });
-      return;
-    } catch {
-      //
-    }
-  }
-}
-
-/** We don't know what appears first (cookie vs language bar) – handle both in parallel. */
+/**
+ * Handles the cookie consent and any ad-like overlays.
+ * The site UI is forced to English via `use.locale = 'en-US'` (playwright.config.ts),
+ * so no language/translate bar appears and no language handling is needed here.
+ */
 export async function dismissOverlays(page: Page): Promise<void> {
-  await Promise.all([
-    dismissCookieConsentIfPresent(page),
-    dismissLanguageSelectorIfPresent(page),
-  ]);
+  await dismissCookieConsentIfPresent(page);
   await dismissAdLikeOverlays(page);
 }
 
